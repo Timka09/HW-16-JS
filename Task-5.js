@@ -1,70 +1,63 @@
 class Car {
-  constructor(settings) {
-    this.carMaxSpeed = settings.maxSpeed;
-    this.carSpeed = settings.speed;
-    this.carIsOn = settings.isOn;
-    this.carDistance = settings.distance;
-    this.carPrice = settings.price;
+  constructor({maxSpeed, price}) {
+    this.speed = 0;
+    this._price = price;
+    this.maxSpeed = maxSpeed;
+    this.isOn = false;
+    this.distance = 0;
   }
 
   static getSpecs(car) {
     return console.log(
-      `Max Speed: ${car.carMaxSpeed}, Speed: ${car.carSpeed}, Is On: ${car.carIsOn}, Distance: ${car.carDistance}, Price: ${car.carPrice}`
+      `Max Speed: ${car.maxSpeed}, Speed: ${car.speed}, Is On: ${car.isOn}, Distance: ${car.distance}, Price: ${car.price}`
     );
   }
 
   get price() {
-    return this.carPrice;
+    return this._price;
   }
 
   set price(newPrice) {
-    return (this.carPrice += newPrice);
+    return (this._price += newPrice);
   }
 
   turnOn() {
-    return (this.carIsOn = true);
+    return (this.isOn = true);
   }
 
   turnOff() {
-    return (this.carIsOn = false), (this.carSpeed = 0);
+    return (this.isOn = false), (this.speed = 0);
   }
 
-  /*
-   * Додає до властивості speed отримане значення,
-   * за умови, що результуюча швидкість
-   * не більше, ніж значення властивості maxSpeed
-   */
   accelerate(value) {
-    if ((this.carSpeed + value <= this.carMaxSpeed)) {
-      return this.carSpeed += value
+    if (this.speed + value <= this.maxSpeed) {
+      return (this.speed += value);
+    }
+    
+  }
+  
+  decelerate(value) {
+    if (this.speed - value >= 0) {
+      return this.speed -= value;
     } else {
-      return this.carSpeed = this.carMaxSpeed
+      return this.speed = 0
     }
   }
 
-  /*
-   * Забирає від властивості speed отримане значення,
-   * за умови, що результуюча швидкість не менше нуля
-   */
-  decelerate(value) {}
-
-  /*
-   * Додає в поле distance кілометраж (hours * speed),
-   * але тільки в тому випадку, якщо машина заведена!
-   */
-  drive(hours) {}
+  drive(hours) {
+    if (this.isOn === true) {
+     return this.distance += hours * this.speed
+    }
+ }
 }
 
-const settings = new Car({
-  maxSpeed: 200,
-  speed: 0,
-  isOn: false,
-  distance: 0,
-  price: 1000,
-});
+const mustang = new Car({maxSpeed: 200, price: 2000 });
 
-const mustang = new Car({ maxSpeed: 200, price: 2000 });
-
-mustang.accelerate()
+mustang.turnOn();
+mustang.accelerate(50);
+mustang.decelerate(25)
+mustang.drive(3)
+mustang.price = 100
+console.log(mustang.price);
 
 Car.getSpecs(mustang);
